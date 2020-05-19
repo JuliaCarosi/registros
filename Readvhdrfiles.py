@@ -1,3 +1,5 @@
+# %%
+#  "import" de las librerías que vamos a estar usando.
 import os
 import numpy as np
 import mne
@@ -32,11 +34,11 @@ def savesubfigure(a,filename):
     # extent = ax.get_tightbbox(fig.canvas.renderer).transformed(fig.dpi_scale_trans.inverted())
     a.savefig(filename, bbox_inches=extent)
 
-
+# versión de MNE, chequear que estamos usando mne3
 mne.sys_info()
-
+# Acá leemos un archivo particular
 mne.set_log_level("WARNING")
-raw= mne.io.read_raw_brainvision('/Users/rramele/work/kcomplexes/drive-download-20200409T185153Z-001/ExpS11.vhdr', 
+raw= mne.io.read_raw_brainvision('C:\\Users\\julia\\Desktop\\Tesis\\Registros\\RCnew\\ExpS11.vhdr', 
     preload=True, 
     eog=('EOG1_1','EOG2_1'),
     misc=('EMG1_1','EMG2_1'),
@@ -51,11 +53,13 @@ raw.plot_psd()
 #raw.filter(1,20)
 #raw.plot_psd()
 
-a = raw.plot(show_options=True,title='KComplex',start=2121,duration=10,n_channels=10, scalings='auto')
+a = raw.plot(show_options=True,title='KComplex',start=2121,duration=30,n_channels=10, scalings='auto', show_first_samp=True)
 savesubfigure(a,'kcomplex1.eps')
 
-a = raw.plot(show_options=True,title='KComplex',start=504,duration=4,n_channels=10, scalings=dict(eeg=20e-6))
 
+
+a = raw.plot(show_options=True,title='KComplex2',start=504,duration=30,n_channels=10, scalings=dict(eeg=20e-6))
+# chequean que la frecuencia de sampleo sea la esperada
 print('Sampling Frequency: %d' %  raw.info['sfreq'] )
 
 raw.plot(scalings='auto',n_channels=10,block=True)
@@ -65,3 +69,5 @@ print(raw.annotations)
 print (raw.annotations.description)
 
 raw.annotations.save("Annotations.txt")
+
+# %%
