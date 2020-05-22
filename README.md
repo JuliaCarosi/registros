@@ -1,5 +1,8 @@
 # Lectura de Registros de Sueño.
 
+![Ejemplo](images/kcomplex.jpeg)
+
+
 ## Referencias
 * https://github.com/akaraspt/deepsleepnet
 * https://github.com/skjerns/AutoSleepScorer
