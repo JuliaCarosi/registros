@@ -38,8 +38,7 @@ def savesubfigure(a,filename):
 mne.sys_info()
 # Acá leemos un archivo particular
 mne.set_log_level("WARNING")
-raw= mne.io.read_raw_brainvision('/Users/rramele/work/kcomplexes/drive-download-20200409T185153Z-001/ExpS11.vhdr',
-#raw= mne.io.read_raw_brainvision('C:\\Users\\julia\\Desktop\\Tesis\\Registros\\RCnew\\ExpS11.vhdr', 
+raw= mne.io.read_raw_brainvision('C:\\Users\\julia\\Desktop\\Tesis\\Registros\\RCnew\\ExpS11.vhdr', 
     preload=True, 
     eog=('EOG1_1','EOG2_1'),
     misc=('EMG1_1','EMG2_1'),
@@ -48,45 +47,22 @@ raw.rename_channels(lambda s: s.strip("."))
 #raw.set_montage("standard_1020")
 #raw.set_eeg_reference("average")
 
-# data(chan,samp), times(1xsamples)
-a = raw[0]
-
-channel = 0 
-# Channel data
-print(raw[channel][0].shape)
-
-raw[channel][0][0][100] = 10000
-
 #eeg_mne.filter(1,20)
 
 raw.plot_psd()
 #raw.filter(1,20)
 #raw.plot_psd()
 
-#a = raw.plot(show_options=True,title='KComplex',start=2121,duration=30,n_channels=10, scalings='auto', show_first_samp=True)
-#savesubfigure(a,'kcomplex1.eps')
+a = raw.plot(show_options=True,title='KComplex',start=2121,duration=30,n_channels=10, scalings='auto', show_first_samp=True)
+savesubfigure(a,'kcomplex1.eps')
 
-eeg = raw[channel][0][0][0:250*4]  * pow(10,6)
 
-raw[channel][0][0][0:250*4] = np.ones((1,250*4))
 
-import matplotlib.pyplot as plt
-fig = plt.figure()
-ax1 = fig.add_subplot(111)
-
-ax1.plot(eeg,'r', label='EEG')
-plt.legend(loc='upper left')
-plt.show(block=False)
-
-#a = raw.plot(show_options=True,title='KComplex2',start=504,duration=30,n_channels=10, scalings=dict(eeg=20e-6))
+a = raw.plot(show_options=True,title='KComplex2',start=504,duration=30,n_channels=10, scalings=dict(eeg=20e-6))
 # chequean que la frecuencia de sampleo sea la esperada
 print('Sampling Frequency: %d' %  raw.info['sfreq'] )
 
-pplot = raw.plot(scalings='auto',n_channels=10,block=True, )
-
-allaxes = pplot.get_axes()
-subfig = allaxes[0]
-subfig.figure.canvas.draw()
+raw.plot(scalings='auto',n_channels=10,block=True)
 
 print(raw.annotations)
 
