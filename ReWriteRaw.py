@@ -44,19 +44,25 @@ print('Sampling Frequency: %d' %  raw.info['sfreq'] )
 
 
 # (2) Con este código extraigo los datos que necesito y me rearmo la estructura que necesito para poder analizarlo mejor
-
-ch_names = ['Supera75'] + raw.ch_names              # Saco el nombre de los canales pero agrego uno 'peak'
-sfreq = raw.info['sfreq']
 data =raw.get_data()                            # Saco los datos concretos, una matriz de numpy
-eog_resta=data[7] - data[8]                     # Cree la variable de la resta de las dos señales
+nuevocanal = data[6,:] - data[7,:]                   # Cree la variable de la resta de las dos señales
+data[6]=nuevocanal
+data=data[[0,1,2,3,4,5,6,8,9], :]
+new_ch_names =[ raw.ch_names[0], raw.ch_names[1],raw.ch_names[2] , raw.ch_names[3],  raw.ch_names[4],  raw.ch_names[5], "EOG_resta", raw.ch_names[8],  raw.ch_names[9]] 
+
+ch_names = ['Supera75'] + new_ch_names              # Saco el nombre de los canales pero agrego uno 'peak'
+sfreq = raw.info['sfreq']
 
 dat = np.concatenate( (np.zeros((1,data.shape[1])), data), axis=0)    # Le agrego a los datos un array con zeros.
                                                                      # aca si ustedes quieren pueden agregarle 20 o algo asi
                                                                       # cada vez que la señal que ustedes analizan supera los 75
 
-ch_types = ['misc'] + ['eeg' for _ in ch_names[0:6]] + ['eog','eog','emg', 'emg']   # Recompongo los canales.
+
+dat = np.concatenate( (np.zeros ((1, nuevocanal.shape[0])), data), axis=0) 
+
+ch_types = ['misc'] + ['eeg' for _ in ch_names[0:6]] + ['eog','emg', 'emg']   # Recompongo los canales.
 info = mne.create_info(ch_names, sfreq, ch_types=ch_types)
-print(eog_resta)
+
 
 
 info['meas_date'] = raw.info['meas_date']       # Registro el timestamp para las anotaciones.
