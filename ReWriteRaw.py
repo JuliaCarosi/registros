@@ -45,10 +45,12 @@ print('Sampling Frequency: %d' %  raw.info['sfreq'] )
 
 # (2) Con este código extraigo los datos que necesito y me rearmo la estructura que necesito para poder analizarlo mejor
 data =raw.get_data()                            # Saco los datos concretos, una matriz de numpy
-nuevocanal = data[6,:] - data[7,:]                   # Cree la variable de la resta de las dos señales
-data[6]=nuevocanal
-data=data[[0,1,2,3,4,5,6,8,9], :]
-new_ch_names =[ raw.ch_names[0], raw.ch_names[1],raw.ch_names[2] , raw.ch_names[3],  raw.ch_names[4],  raw.ch_names[5], "EOG_resta", raw.ch_names[8],  raw.ch_names[9]] 
+canal_eogs = data[6,:] - data[7,:]                   # Cree la variable de la resta de las dos señales
+canal_emgs =  data[8,:] - data[9,:]
+data[6]=canal_eogs
+data[7]=canal_emgs
+data=data[[0,1,2,3,4,5,6,7], :]
+new_ch_names =[ raw.ch_names[0], raw.ch_names[1],raw.ch_names[2] , raw.ch_names[3],  raw.ch_names[4],  raw.ch_names[5], "EOG_resta", "EMG_resta"] 
 
 ch_names = ['Supera75'] + new_ch_names              # Saco el nombre de los canales pero agrego uno 'peak'
 sfreq = raw.info['sfreq']
@@ -58,9 +60,10 @@ dat = np.concatenate( (np.zeros((1,data.shape[1])), data), axis=0)    # Le agreg
                                                                       # cada vez que la señal que ustedes analizan supera los 75
 
 
-dat = np.concatenate( (np.zeros ((1, nuevocanal.shape[0])), data), axis=0) 
+dat = np.concatenate( (np.zeros ((1, canal_eogs.shape[0])), data), axis=0) 
+dat = np.concatenate( (np.zeros ((1, canal_emgs.shape[0])), data), axis=0) 
 
-ch_types = ['misc'] + ['eeg' for _ in ch_names[0:6]] + ['eog','emg', 'emg']   # Recompongo los canales.
+ch_types = ['misc'] + ['eeg' for _ in ch_names[0:6]] + ['eog','emg']   # Recompongo los canales.
 info = mne.create_info(ch_names, sfreq, ch_types=ch_types)
 
 
