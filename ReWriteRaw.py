@@ -43,7 +43,8 @@ print('Sampling Frequency: %d' %  raw.info['sfreq'] )
 #pplot = raw.plot(scalings='auto',n_channels=10,block=True, )
 from scipy import signal
 import matplotlib.pyplot as plt
-t = np.linspace(0, 3318, 663804, endpoint=False)    #me creo mi señal con pulso de 0.5 seg
+t = np.linspace(1, round(data.shape[1]/sfreq), data.shape[1], endpoint=False)   
+#t = np.linspace(0, 3318, 663804, endpoint=False)    #me creo mi señal con pulso de 0.5 seg
 plt.plot(t, signal.square(2 * np.pi * 1 * t))
 plt.ylim(-2, 2)
 
