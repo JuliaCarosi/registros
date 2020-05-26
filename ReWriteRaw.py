@@ -87,6 +87,8 @@ reraw.set_annotations(raw.annotations)          # Construyo un nuevo objeto raw 
 #reraw.plot(scalings='auto',n_channels=10,block=True, )
 #pplot=reraw.plot(scalings='auto', n_channels=10, block=True, )
 
+scal = dict( eog=250e-6,emg=1e-4, grad=4e-11,  eeg=20e-5)     #Scaling factors 
+
 reraw_copy=reraw.copy()
 reraw_copy.drop_channels(['F3_1','F4_1','P3_1','P4_1'])
 pplot=reraw_copy.plot(scalings='auto', duration=30, n_channels=10, block=True, )
