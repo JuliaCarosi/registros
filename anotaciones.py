@@ -10,7 +10,6 @@ from tkinter import messagebox
 from scipy import signal
 from matplotlib.transforms import Bbox
 #from properties import filename
-
 #Print the system information
 mne.sys_info()
 
