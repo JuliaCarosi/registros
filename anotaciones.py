@@ -6,11 +6,10 @@ import os
 import matplotlib.pyplot as plt                     # Este codigo es un plot basico para ver la señal, los datos concretos.
 import argparse
 import easygui
-
 from tkinter import messagebox
-#from properties import filename
 from scipy import signal
 from matplotlib.transforms import Bbox
+#from properties import filename
 
 #Print the system information
 mne.sys_info()
@@ -56,10 +55,10 @@ def new_raw_data(raw,sfreq):
     # Con este código extraigo los datos que necesito y me rearmo la estructura que necesito para poder analizarlo mejor
     eog = (raw.copy()).pick_types(eog=True)
     eog_data = eog.get_data()
-    sub_eog = eog_data[0,:]-eog_data[1,:]
+    sub_eog = eog_data[0,:]-eog_data[1,:] #me creo mi canal EOG como la resta de amos
     emg = (raw.copy()).pick_types(misc=True)
     emg_data = emg.get_data()
-    sub_emg = emg_data[0,:]-emg_data[1,:]
+    sub_emg = emg_data[0,:]-emg_data[1,:] #me creo mi canal EMG como la resta de amos
     t = np.linspace(1, round(time_shape/sfreq), time_shape, endpoint=False)    #me creo mi señal artificial con pulso de 0.5 seg
     pulso = signal.square(2 * np.pi * 1 * t) #señal del pulso
     pos = (raw.ch_names).index('C3_1')

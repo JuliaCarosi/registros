@@ -4,8 +4,11 @@ import os
 import numpy as np
 import mne
 from properties import filename
-
+import matplotlib.pyplot as plt                     # Este codigo es un plot basico para ver la señal, los datos concretos.
+from scipy import signal
+import matplotlib.pyplot as plt
 from matplotlib.transforms import Bbox
+
 
 
 # versión de MNE, chequear que estamos usando mne3
@@ -28,7 +31,6 @@ channel = 0
 eeg = raw[channel][0][0][0:250*4]  * pow(10,6)      # Tomo 4 segundos.
 
 
-import matplotlib.pyplot as plt                     # Este codigo es un plot basico para ver la señal, los datos concretos.
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 
@@ -40,16 +42,9 @@ plt.show(block=False)
 # chequean que la frecuencia de sampleo sea la esperada
 print('Sampling Frequency: %d' %  raw.info['sfreq'] )
 
-#pplot = raw.plot(scalings='auto',n_channels=10,block=True, )
-from scipy import signal
-import matplotlib.pyplot as plt
-t = np.linspace(1, round(data.shape[1]/sfreq), data.shape[1], endpoint=False)   
-#t = np.linspace(0, 3318, 663804, endpoint=False)    #me creo mi señal con pulso de 0.5 seg
-plt.plot(t, signal.square(2 * np.pi * 1 * t))
-plt.ylim(-2, 2)
-
-# (2) Con este código extraigo los datos que necesito y me rearmo la estructura que necesito para poder analizarlo mejor
+sfreq = raw.info['sfreq']
 data =raw.get_data()                            # Saco los datos concretos, una matriz de numpy
+t = np.linspace(1, round(data.shape[1]/sfreq), data.shape[1], endpoint=False)   
 print(data[0:5])
 canal_eogs = data[6,:] - data[7,:]                   # Cree la variable de la resta de las dos señales
 canal_emgs =  data[8,:] - data[9,:]
@@ -57,11 +52,16 @@ data[6]=canal_eogs
 data[7]=canal_emgs
 data[8]=signal.square(2 * np.pi * 1 * t)
 data=data[[0,1,2,3,4,5,6,7,8], :]
+#pplot = raw.plot(scalings='auto',n_channels=10,block=True, )
+#t = np.linspace(0, 3318, 663804, endpoint=False)    #me creo mi señal con pulso de 0.5 seg
+plt.plot(t, signal.square(2 * np.pi * 1 * t))
+plt.ylim(-2, 2)
+
+# (2) Con este código extraigo los datos que necesito y me rearmo la estructura que necesito para poder analizarlo mejor
 new_ch_names =[ raw.ch_names[0], raw.ch_names[1],raw.ch_names[2] , raw.ch_names[3],  raw.ch_names[4],  raw.ch_names[5], "EOG_resta", "EMG_resta", "Pulso"] 
 
 
 ch_names = ['Supera75'] + new_ch_names              # Saco el nombre de los canales pero agrego uno 'peak'
-sfreq = raw.info['sfreq']
 
 
 dat = np.concatenate( (np.zeros((1,data.shape[1])), data), axis=0)    # Le agrego a los datos un array con zeros.
