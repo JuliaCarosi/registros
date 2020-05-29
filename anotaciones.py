@@ -126,13 +126,4 @@ def main():
 
     raw.save(subject + ".fif")
 
-
-
-if __name__ == '__main__':
-    #se agregan todos los parametros que pueden pasarse al software cuando se llama
-    parser = argparse.ArgumentParser()
-    #parser.add_argument('--anotaciones', required=True, help='True o False si el archivo ya tiene anotaciones previas')
-    # parser.add_argument('--posee_annotations', required=True, default=False, help='Ingresar True si ya tiene anotaciones guardadas')
-    args = parser.parse_args()
-
-    main(**vars(args))
+main()
