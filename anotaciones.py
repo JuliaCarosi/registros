@@ -1,4 +1,3 @@
-# %%
 #  "import" de las librerías que vamos a estar usando.
 import numpy as np
 import mne
@@ -10,6 +9,7 @@ from tkinter import messagebox
 from scipy import signal
 from matplotlib.transforms import Bbox
 #from properties import filename
+
 #Print the system information
 mne.sys_info()
 
@@ -22,7 +22,6 @@ def get_name(path):
     print('subject',subject)
     return subject
 
-
 def set_sleep_states(raw,path):
     estados = np.loadtxt(path,delimiter =' ', usecols =(0) )
     cant_anotations= estados.shape[0]
@@ -31,6 +30,7 @@ def set_sleep_states(raw,path):
     duration = np.zeros((cant_anotations))     #array duracion, siempre 30
     description = np.zeros((cant_anotations))  #array descripcion de la etiqueta
     start = 0
+    
     for i in range(cant_anotations):
         onset[i] = start
         duration[i] = 30 #* sfreq
@@ -42,11 +42,6 @@ def set_sleep_states(raw,path):
     
     return raw2
 
-def extract_signal(raw):
-    for element in raw.annotations:
-        if (element.description == 'K'):
-            print('onset: ', element.get('onset'), 'duration: ', element.get('duration'))
-
 def new_raw_data(raw,sfreq):
     data =raw.get_data()                                 # Saco los datos concretos, una matriz de numpy
     time_shape = data.shape[1]
@@ -54,16 +49,21 @@ def new_raw_data(raw,sfreq):
     # Con este código extraigo los datos que necesito y me rearmo la estructura que necesito para poder analizarlo mejor
     eog = (raw.copy()).pick_types(eog=True)
     eog_data = eog.get_data()
-    sub_eog = eog_data[0,:]-eog_data[1,:] #me creo mi canal EOG como la resta de amos
+    sub_eog = eog_data[0,:]-eog_data[1,:] #me creo mi canal EOG como la resta de ambos
+    
     emg = (raw.copy()).pick_types(misc=True)
     emg_data = emg.get_data()
     sub_emg = emg_data[0,:]-emg_data[1,:] #me creo mi canal EMG como la resta de amos
+    
     t = np.linspace(1, round(time_shape/sfreq), time_shape, endpoint=False)    #me creo mi señal artificial con pulso de 0.5 seg
     pulso = signal.square(2 * np.pi * 1 * t) #señal del pulso
+    
     pos = (raw.ch_names).index('C3_1')
     c3_1 = data[pos,:]
+    
     pos2 =(raw.ch_names).index('C4_1')
     c4_1 = data[pos2,:]
+    
     new_data=data.copy()
     new_data[0]= sub_eog
     new_data[1]= sub_emg
@@ -72,11 +72,15 @@ def new_raw_data(raw,sfreq):
     new_data[4]= c4_1
     new_data=new_data[[0,1,2,3,4], :]
     new_ch_names = ['EOG', 'EMG', 'Pulse', 'C3', 'C4']
+    
     new_chtypes = 3* ['misc'] + 2 *['eeg'] # Recompongo los canales.
+    
     new_info = mne.create_info(new_ch_names, sfreq, ch_types=new_chtypes)
     new_info['meas_date'] = raw.info['meas_date']       # Registro el timestamp para las anotaciones.
+    
     new_raw=mne.io.RawArray(new_data, new_info)
     new_raw.set_annotations(raw.annotations)           # Construyo un nuevo objeto raw que tiene lo que necesito.
+    
     return(new_raw)
 
 def main():
@@ -110,11 +114,6 @@ def main():
         path = easygui.fileopenbox(title='Seleccione fif')#selecciono la carpeta vhdr
         raw = mne.io.read_raw_fif(path)
 
-        messagebox.showinfo(message="Selecciona el txt con anotaciones", title="Seleccion de anotaciones")
-        path_annotations = easygui.fileopenbox(title='Seleccione txt con etapa de sueño') #selecciono el txt de estados de sueño
-        raw.set_annotations(mne.read_annotations(path_annotations))
-
-  
     subject = get_name(path)
     info = raw.info
     sfreq = info.get('sfreq') #frecuencia de muestre
@@ -126,13 +125,4 @@ def main():
 
     raw.save(subject + ".fif")
 
-
-
-if __name__ == '__main__':
-    #se agregan todos los parametros que pueden pasarse al software cuando se llama
-    parser = argparse.ArgumentParser()
-    #parser.add_argument('--anotaciones', required=True, help='True o False si el archivo ya tiene anotaciones previas')
-    # parser.add_argument('--posee_annotations', required=True, default=False, help='Ingresar True si ya tiene anotaciones guardadas')
-    args = parser.parse_args()
-
-    main(**vars(args))
+main()
