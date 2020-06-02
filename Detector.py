@@ -23,6 +23,11 @@ raw= mne.io.read_raw_brainvision('C:\\Users\\julia\\Desktop\\Tesis\\Registros\\R
     verbose=True)
 raw.rename_channels(lambda s: s.strip("."))
 
+data =raw.get_data()                                 # Saco los datos concretos, una matriz de numpy
+time_shape = data.shape[1]
+
+
+
 # -----------------------------------------------------------------
 # data(chan,samp), times(1xsamples)
 
@@ -36,24 +41,31 @@ eeg2 = raw[channel][0][0][0:250*1]  * pow(10,6)   #tomo las señales del eeg en 
 eeg3 = raw[channel][0][0][250:500*1]  * pow(10,6)   #tomo las señales del eeg en el 2 segundo
 
 
+dat = np.concatenate( (np.zeros((1,data.shape[1])), data), axis=0) 
+print(dat)
+
 i = 0
 j=1
-while i <= 3001:
+while i <= time_shape:
     eeg4 = raw[channel][0][0][i:250*j*1]  * pow(10,6) # tomo los valores del eeg cada 1 segundo
-    eeg5 = raw[channel][0][0][i+250:250*(j+1)*1]  * pow(10,6) # tomo los valores del eeg cada 1 segundo, un segundo mas tarde del anterior
     print(eeg4)
-    print(eeg5)
-    resta= eeg5-eeg4
-    print(resta)
-
-    newsignal=resta
-
-    newsignal[resta>75]=100
-    newsignal[resta<=75]=0
-    print(newsignal)
+  
+    signal=eeg4 - np.mean(eeg4) # le resto la media de la señal a mi señal 
+    signal=signal+np.min(signal)*-1 # le sumo a la señal el minimo en positivo
+    #print(signal)
     
-    print(i)
-    print(j)
+    newsignal=signal
+
+    newsignal[signal>75]=100
+    newsignal[signal<=75]=0
+
+    #print(newsignal)
+    
+    #print(i)
+    #print(j)
 
     i += 250
     j += 1
+
+    
+
