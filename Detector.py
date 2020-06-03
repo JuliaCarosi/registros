@@ -25,7 +25,7 @@ raw.rename_channels(lambda s: s.strip("."))
 
 data =raw.get_data()                                 # Saco los datos concretos, una matriz de numpy
 time_shape = data.shape[1]
-
+print(time_shape)
 
 
 # -----------------------------------------------------------------
@@ -35,37 +35,43 @@ time_shape = data.shape[1]
 
 channel = 0
 eeg = raw[channel][0][0][0:250*4]  * pow(10,6)      # Tomo 4 segundos.
-print(eeg)
+#print(eeg)
 
 eeg2 = raw[channel][0][0][0:250*1]  * pow(10,6)   #tomo las señales del eeg en el 1 segundo
 eeg3 = raw[channel][0][0][250:500*1]  * pow(10,6)   #tomo las señales del eeg en el 2 segundo
-
+print(eeg2)
 
 dat = np.concatenate( (np.zeros((1,data.shape[1])), data), axis=0) 
-print(dat)
+#print(dat)
+
+
+
+
+arraysenial = []
 
 i = 0
 j=1
 while i <= time_shape:
-    eeg4 = raw[channel][0][0][i:250*j*1]  * pow(10,6) # tomo los valores del eeg cada 1 segundo
-    print(eeg4)
+    eeg4 = raw[channel][0][0][i:200*j*1]  * pow(10,6) #tomo los valores del eeg cada 1 segundo
+    #print(eeg4)
+    eeg2 = raw[channel][0][0][i:125*j]  * pow(10,6)   #tomo las señales del eeg en el 0.5 segundos
   
     signal=eeg4 - np.mean(eeg4) # le resto la media de la señal a mi señal 
     signal=signal+np.min(signal)*-1 # le sumo a la señal el minimo en positivo
-    #print(signal)
     
     newsignal=signal
 
     newsignal[signal>75]=100
     newsignal[signal<=75]=0
 
-    #print(newsignal)
+    arraysenial.append (newsignal)
     
-    #print(i)
-    #print(j)
 
-    i += 250
+
+    i += 200
     j += 1
 
-    
+arraysenial = np.asarray(arraysenial)   #este array contiene 3320 arrays con cada array 200 valores de 1 segundo se señal cada uno con los 0 y 100
+#print(arraysenial[654])
+#print(arraysenial[0])
 
