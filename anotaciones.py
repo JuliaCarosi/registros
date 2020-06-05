@@ -71,11 +71,12 @@ def new_raw_data(raw,sfreq):
     new_data[2]= pulso
     new_data[3]= c3_1
     new_data[4]= c4_1
-    # new_data[5]= np.ones((1,c3_1.shape[0])) 
-    new_data=new_data[[0,1,2,3,4], :]
-    new_ch_names = ['EOG', 'EMG', 'Pulse', 'C3', 'C4']
+    #new_data[5]= np.ones((1,c3_1.shape[0])) 
+    new_data[5]= Supera75() 
+    new_data=new_data[[0,1,2,3,4,5], :]
+    new_ch_names = ['EOG', 'EMG', 'Pulse', 'C3', 'C4','Supera75']
     
-    new_chtypes = 3* ['misc'] + 2 *['eeg'] # Recompongo los canales.
+    new_chtypes = 3* ['misc'] + 2 *['eeg'] + ['stim'] # Recompongo los canales.
     
     new_info = mne.create_info(new_ch_names, sfreq, ch_types=new_chtypes)
     new_info['meas_date'] = raw.info['meas_date']       # Registro el timestamp para las anotaciones.
@@ -120,7 +121,7 @@ def main():
     info = raw.info
     sfreq = info.get('sfreq') #frecuencia de muestre
     
-    raw.plot(show_options=True,title='Etiquetado',start=0,duration=30,n_channels=5, scalings=scal,block=True,order=[0,1,2,3,4])
+    raw.plot(show_options=True,title='Etiquetado',start=0,duration=30,n_channels=6, scalings=scal,block=True,order=[0,1,2,3,4,5])
     #order cambia el orden en el que aparecen los canales
 
     raw.annotations.save(subject + "Annotations.txt")
