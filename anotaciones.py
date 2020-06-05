@@ -8,6 +8,7 @@ import easygui
 from tkinter import messagebox
 from scipy import signal
 from matplotlib.transforms import Bbox
+from Detector import Supera75
 #from properties import filename
 
 #Print the system information
@@ -70,6 +71,7 @@ def new_raw_data(raw,sfreq):
     new_data[2]= pulso
     new_data[3]= c3_1
     new_data[4]= c4_1
+    # new_data[5]= np.ones((1,c3_1.shape[0])) 
     new_data=new_data[[0,1,2,3,4], :]
     new_ch_names = ['EOG', 'EMG', 'Pulse', 'C3', 'C4']
     
@@ -111,14 +113,14 @@ def main():
 
     elif(anotaciones == 'yes'): #evita pasar por todo lo mismo de nuevo 
         messagebox.showinfo(message="Selecciona el archivo fif", title="Seleccion de datos")
-        path = easygui.fileopenbox(title='Seleccione fif')#selecciono la carpeta vhdr
+        path = easygui.fileopenbox(title='Seleccione fif')#selecciono la carpeta vhdr  #@TODO hacer algo para que no se borren los registros de sueño cuando se borra el kcomplex mal etiquetado
         raw = mne.io.read_raw_fif(path)
 
     subject = get_name(path)
     info = raw.info
     sfreq = info.get('sfreq') #frecuencia de muestre
     
-    raw.plot(show_options=True,title='Etiquetado',start=0,duration=30,n_channels=10, scalings=scal,block=True,order=[0,3,2,4,1])
+    raw.plot(show_options=True,title='Etiquetado',start=0,duration=30,n_channels=5, scalings=scal,block=True,order=[0,1,2,3,4])
     #order cambia el orden en el que aparecen los canales
 
     raw.annotations.save(subject + "Annotations.txt")
