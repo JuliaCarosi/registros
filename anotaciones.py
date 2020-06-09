@@ -126,6 +126,6 @@ def main():
 
     raw.annotations.save(subject + "Annotations.txt")
 
-    raw.save(subject + ".fif")
+    raw.save(subject + ".fif",overwrite=True))
 
 main()
