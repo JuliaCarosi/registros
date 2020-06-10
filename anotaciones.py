@@ -38,7 +38,7 @@ def set_sleep_states(raw,path):
         description[i] = estados[i]
         start= start + 30 #* sfreq
 
-    states_anotations = mne.Annotations(onset,duration,description)    #<Annotations | 136 segments: 0.0 (50), 1.0 (20), 2.0 (42), 3.0 (24)>
+    states_anotations = mne.Annotations(onset,duration,description, orig_time=raw.annotations.orig_time) #le agregamos el origen_time del raw
     raw2 = raw.copy().set_annotations(states_anotations)
     
     return raw2
