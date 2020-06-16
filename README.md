@@ -11,4 +11,5 @@
 * https://www.researchgate.net/publication/332947032_SleepEEGNet_Automated_sleep_stage_scoring_with_sequence_to_sequence_deep_learning_approach
 * https://sleeptight.isr.uc.pt/
 * https://www.researchgate.net/publication/340689665_Beyond_K-complex_binary_scoring_during_sleep_Probabilistic_classification_using_deep_learning/references
+* https://arxiv.org/abs/1910.11162
 
